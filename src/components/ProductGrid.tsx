@@ -3,6 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { ProductDetail } from "./ProductDetail";
+import { LoadingSteps } from "./LoadingSteps";
 
 interface ProductGridProps {
   handle?: string;
@@ -10,6 +11,7 @@ interface ProductGridProps {
 
 export function ProductGrid({ handle }: ProductGridProps = {}) {
   const products = useQuery(api.products.getProductsByHandle, handle ? { handle } : "skip");
+  const requestStatus = useQuery(api.requests.getRequestStatus, handle ? { handle } : "skip");
   
   const [selectedProductId, setSelectedProductId] = useState<Id<"products"> | null>(null);
 
@@ -22,6 +24,19 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
   }
 
   if (products.length === 0) {
+    // Check if request is still processing
+    if (requestStatus && (requestStatus.status === "pending" || requestStatus.status === "processing")) {
+      return <LoadingSteps />;
+    }
+    
+    if (requestStatus && requestStatus.status === "failed") {
+         return (
+            <div className="text-center py-10 text-red-500">
+                Unable to process this profile. Please make sure it's public and try again.
+            </div>
+        );
+    }
+
     return (
       <div className="text-center py-10 text-gray-500">
         {handle 

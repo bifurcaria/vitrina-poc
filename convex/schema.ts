@@ -11,7 +11,7 @@ export default defineSchema({
       v.literal("failed")
     ),
     requestTime: v.number(),
-  }),
+  }).index("by_handle", ["handle"]),
   products: defineTable({
     requestId: v.id("catalog_requests"),
     originalImageUrl: v.string(),

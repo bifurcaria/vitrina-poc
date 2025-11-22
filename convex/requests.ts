@@ -1,4 +1,4 @@
-import { mutation, internalMutation, internalQuery } from "./_generated/server";
+import { mutation, internalMutation, internalQuery, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const create = mutation({
@@ -17,6 +17,18 @@ export const getRequest = internalQuery({
   args: { id: v.id("catalog_requests") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
+  },
+});
+
+export const getRequestStatus = query({
+  args: { handle: v.string() },
+  handler: async (ctx, args) => {
+    const request = await ctx.db
+      .query("catalog_requests")
+      .withIndex("by_handle", (q) => q.eq("handle", args.handle))
+      .order("desc")
+      .first();
+    return request ? { status: request.status, timestamp: request.requestTime } : null;
   },
 });
 
