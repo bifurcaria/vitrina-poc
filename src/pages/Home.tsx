@@ -43,7 +43,7 @@ export function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300 flex flex-col">
+    <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300 flex flex-col">
       <header className="py-6 px-6 text-center relative">
         <div className="font-bold text-xl tracking-tight">
             vitrina
@@ -51,17 +51,17 @@ export function Home() {
         
         <button 
           onClick={() => setShowSeller(!showSeller)} 
-          className="absolute top-6 right-6 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-gray-300"
+          className="absolute top-6 right-6 text-sm text-gray-500 hover:text-gray-900"
         >
           {showSeller ? "Close" : "Sell"}
         </button>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 -mt-20">
-        <div className="max-w-3xl text-center space-y-8">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-tight text-balance">
+        <div className="max-w-4xl text-center space-y-8">
+            <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter leading-none sm:leading-tight">
                 tus fotos viven en instagram. <br className="hidden md:block" />
-                <span className="text-gray-400 dark:text-gray-600">tu catálogo empieza aquí.</span>
+                <span className="italic">tu catálogo empieza aquí.</span>
             </h1>
 
             <form onSubmit={handleSubmit} className="max-w-md mx-auto w-full flex gap-3 flex-col">
@@ -70,13 +70,13 @@ export function Home() {
                     placeholder="@usuario" 
                     value={handle}
                     onChange={(e) => setHandle(e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-800 bg-transparent focus:ring-2 focus:ring-black dark:focus:ring-white outline-none transition text-lg"
+                    className="flex-1 px-4 py-3 rounded-lg border border-gray-200 bg-transparent focus:ring-2 focus:ring-black outline-none transition text-lg"
                     disabled={isLoading}
                 />
                 <button 
                     type="submit"
                     disabled={isLoading}
-                    className="px-6 py-3 text-black dark:text-white font-medium hover:opacity-70 transition text-lg whitespace-nowrap mx-auto underline underline-offset-4 disabled:opacity-50"
+                    className="px-6 py-3 text-black font-semibold hover:opacity-70 transition text-xl whitespace-nowrap mx-auto underline underline-offset-4 disabled:opacity-50"
                 >
                     {isLoading ? "cargando..." : "empecemos \u2192"}
                 </button>
@@ -84,7 +84,7 @@ export function Home() {
         </div>
 
         {showSeller && (
-          <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-900 rounded-xl w-full max-w-md border border-gray-200 dark:border-gray-800 animate-in fade-in slide-in-from-bottom-4">
+          <div className="mt-12 p-6 bg-gray-50 w-full max-w-md animate-in fade-in slide-in-from-bottom-4">
             <h2 className="text-xl font-semibold mb-4">Connect Your Store</h2>
             <div className="flex gap-2 mb-4">
               <input 
@@ -92,7 +92,7 @@ export function Home() {
                 placeholder="@yourhandle" 
                 value={sellerHandle}
                 onChange={(e) => setSellerHandle(e.target.value)}
-                className="flex-1 px-4 py-2 rounded border dark:bg-gray-800 dark:border-gray-700"
+                className="flex-1 px-4 py-2 rounded border"
               />
             </div>
             {sellerHandle && <SellerOnboarding handle={sellerHandle} />}
