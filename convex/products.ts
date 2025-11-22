@@ -2,9 +2,11 @@ import { query, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const getProducts = query({
-  handler: async (ctx) => {
+  args: { limit: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    const limit = args.limit ?? 20;
     // Fetch all products, most recent first
-    const products = await ctx.db.query("products").order("desc").take(20);
+    const products = await ctx.db.query("products").order("desc").take(limit);
     return products;
   },
 });

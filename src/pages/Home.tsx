@@ -4,6 +4,8 @@ import { useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { SellerOnboarding } from "../components/SellerOnboarding";
 
+import { LatestListings } from "../components/LatestListings";
+
 export function Home() {
   const [handle, setHandle] = useState("");
   const [showSeller, setShowSeller] = useState(false);
@@ -82,6 +84,8 @@ export function Home() {
                 </button>
             </form>
         </div>
+
+        <LatestListings />
 
         {showSeller && (
           <div className="mt-12 p-6 bg-gray-50 w-full max-w-md animate-in fade-in slide-in-from-bottom-4">
