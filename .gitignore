@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Convex
+convex/_generated/
+
+# Environment variables
+.env
+.env.local
