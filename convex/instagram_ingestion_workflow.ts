@@ -42,7 +42,7 @@ export const ingestInstagramPosts = internalAction({
 
         // 3. Image Processing
         const processedImageUrl = await processAndUploadProductImage(ctx, post.displayUrl, extracted.productName) || post.displayUrl;
-
+        console.log(processedImageUrl)
         // 4. Generate Mercado Pago Preference
         let mercadoPagoLink: string | undefined;
         try {

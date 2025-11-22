@@ -17,13 +17,12 @@ export const extractProductDataFromCaption = traceable(async function extractPro
   if (!caption) return null;
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
     const prompt = `${EXTRACT_PRODUCT_INFO_PROMPT}
 
       Caption: "${caption}"
     `;
-
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
