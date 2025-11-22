@@ -3,10 +3,41 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { ProductDetail } from "./ProductDetail";
-import { LoadingSteps } from "./LoadingSteps";
 
 interface ProductGridProps {
   handle?: string;
+}
+
+function SkeletonProduct() {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 w-full h-full">
+      <div className="aspect-square bg-gray-200 dark:bg-gray-700 animate-pulse" />
+      <div className="p-4 space-y-3">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse" />
+        <div className="flex justify-between items-center">
+           <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/3 animate-pulse" />
+           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-8 animate-pulse" />
+        </div>
+        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
+function ImageWithPlaceholder({ src, alt }: { src: string, alt: string }) {
+  const [loaded, setLoaded] = useState(false);
+  
+  return (
+    <div className="w-full h-full relative overflow-hidden bg-gray-100 dark:bg-gray-900">
+       {!loaded && <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse z-10" />}
+       <img
+         src={src}
+         alt={alt}
+         className={`object-cover w-full h-full transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+         onLoad={() => setLoaded(true)}
+       />
+    </div>
+  );
 }
 
 export function ProductGrid({ handle }: ProductGridProps = {}) {
@@ -15,21 +46,20 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
   
   const [selectedProductId, setSelectedProductId] = useState<Id<"products"> | null>(null);
 
-  if (products === undefined) {
-    return (
-      <div className="text-center py-10 text-gray-500">
-        Loading products...
-      </div>
-    );
-  }
+  const isProductsLoading = products === undefined;
+  const isStatusLoading = requestStatus === undefined;
+  const isProcessing = requestStatus?.status === "pending" || requestStatus?.status === "processing";
+  
+  const isLoading = isProductsLoading || isStatusLoading || isProcessing;
+  
+  const productCount = products?.length || 0;
+  
+  // Calculate how many skeletons are needed to reach at least 3, but only if we are in a loading/processing state.
+  // If we are done (not loading/processing), we show exactly what we have (even if 0 or 1).
+  const skeletonCount = isLoading ? Math.max(0, 3 - productCount) : 0;
 
-  if (products.length === 0) {
-    // Check if request is still processing
-    if (requestStatus && (requestStatus.status === "pending" || requestStatus.status === "processing")) {
-      return <LoadingSteps />;
-    }
-    
-    if (requestStatus && requestStatus.status === "failed") {
+  if (!isLoading && productCount === 0) {
+    if (requestStatus?.status === "failed") {
          return (
             <div className="text-center py-10 text-red-500">
                 Unable to process this profile. Please make sure it's public and try again.
@@ -47,19 +77,24 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {isLoading && (
+        <div className="w-full text-center py-2 animate-pulse text-gray-500 font-medium transition-opacity duration-500">
+          buscando prendas disponibles...
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {products?.map((product) => (
           <div 
             key={product._id} 
             onClick={() => setSelectedProductId(product._id)}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition cursor-pointer group"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition cursor-pointer group animate-in fade-in duration-500"
           >
             <div className="aspect-square relative bg-gray-100 dark:bg-gray-900 overflow-hidden">
-              <img 
+              <ImageWithPlaceholder 
                 src={product.processedImageUrl || product.originalImageUrl} 
                 alt={product.productName || "Product Image"}
-                className="object-cover w-full h-full group-hover:scale-105 transition duration-300"
               />
             </div>
             
@@ -80,6 +115,10 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
               </div>
             </div>
           </div>
+        ))}
+        
+        {Array.from({ length: skeletonCount }).map((_, index) => (
+          <SkeletonProduct key={`skeleton-${index}`} />
         ))}
       </div>
 
