@@ -28,7 +28,7 @@ function App() {
       <footer className="text-center py-8 text-sm text-gray-500 dark:text-gray-500 border-t border-gray-200 dark:border-gray-800">
         <p>Built with Convex, Gemini 3 Pro, and Nano Banana.</p>
       </footer>
-    </div>
+      </div>
   )
 }
 

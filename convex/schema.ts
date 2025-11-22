@@ -20,7 +20,5 @@ export default defineSchema({
     price: v.optional(v.number()),
     size: v.optional(v.string()),
     igPostUrl: v.string(),
-    mercadoPagoLink: v.optional(v.string()),
   }),
 });
-

@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import type { Id } from "../../convex/_generated/dataModel";
+import { ProductDetail } from "./ProductDetail";
 
 export function ProductGrid() {
   const products = useQuery(api.products.getProducts);
+  const [selectedProductId, setSelectedProductId] = useState<Id<"products"> | null>(null);
 
   if (!products) {
     return (
@@ -26,17 +30,14 @@ export function ProductGrid() {
         {products.map((product) => (
           <div 
             key={product._id} 
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition"
+            onClick={() => setSelectedProductId(product._id)}
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition cursor-pointer group"
           >
-            <div className="aspect-square relative bg-gray-100 dark:bg-gray-900">
-              {/* 
-                 Display processed image if available, otherwise original.
-                 In our pipeline, we set both, but processed might be just a copy for now.
-              */}
+            <div className="aspect-square relative bg-gray-100 dark:bg-gray-900 overflow-hidden">
               <img 
                 src={product.processedImageUrl || product.originalImageUrl} 
                 alt={product.productName || "Product Image"}
-                className="object-cover w-full h-full"
+                className="object-cover w-full h-full group-hover:scale-105 transition duration-300"
               />
             </div>
             
@@ -55,19 +56,17 @@ export function ProductGrid() {
                    </span>
                 )}
               </div>
-              
-              <a 
-                href={product.igPostUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center py-2.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-black font-semibold hover:opacity-90 transition"
-              >
-                View on Instagram
-              </a>
             </div>
           </div>
         ))}
       </div>
+
+      {selectedProductId && (
+        <ProductDetail 
+          productId={selectedProductId} 
+          onClose={() => setSelectedProductId(null)} 
+        />
+      )}
     </div>
   );
 }

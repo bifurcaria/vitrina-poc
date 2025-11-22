@@ -41,9 +41,7 @@ export const scrapeInstagram = action({
       const { items } = await client.dataset(run.defaultDatasetId).listItems();
       
       // Chain to the internal action for processing
-      // Note: Convex automatically maps kebab-case filenames (instagram-ingestion-workflow.ts)
-      // to camelCase properties on the internal object (instagramIngestionWorkflow).
-      await ctx.runAction(internal.instagramIngestionWorkflow.ingestInstagramPosts, {
+      await ctx.runAction(internal.instagram_ingestion_workflow.ingestInstagramPosts, {
         requestId: args.requestId,
         posts: items,
       });

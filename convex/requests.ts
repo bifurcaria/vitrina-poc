@@ -34,10 +34,6 @@ export const addProducts = internalMutation({
         requestId: args.requestId,
         productName: product.productName,
         price: product.price,
-        // Storing currency if needed in future, though schema didn't explicitly ask for it in spec.md,
-        // it's good practice. The spec.md "products" table def:
-        // requestId, originalImageUrl, processedImageUrl, productName, price, size, igPostUrl, mercadoPagoLink
-        // We'll map incoming data to this schema.
         originalImageUrl: product.originalImageUrl,
         processedImageUrl: product.processedImageUrl,
         size: product.size || undefined,
@@ -45,7 +41,6 @@ export const addProducts = internalMutation({
       });
     }
 
-    // Update request status
     await ctx.db.patch(args.requestId, {
       status: "completed",
     });

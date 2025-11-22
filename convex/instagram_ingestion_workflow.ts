@@ -3,8 +3,8 @@
 import { internalAction } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
-import { extractProductDataFromCaption } from "./steps/parse-post";
-import { processAndUploadProductImage } from "./steps/process-image";
+import { extractProductDataFromCaption } from "./steps/parse_post";
+import { processAndUploadProductImage } from "./steps/process_image";
 
 export const ingestInstagramPosts = internalAction({
   args: {
