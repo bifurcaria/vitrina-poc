@@ -18,7 +18,7 @@ export const getAuthUrl = action({
   args: {
     handle: v.string(), // Pass the handle to state so we know who connected
   },
-  handler: async (ctx, args) => {
+  handler: async (_ctx, args) => {
     if (!MP_APP_ID || !MP_REDIRECT_URI) {
       throw new Error("Missing MP_APP_ID or MP_REDIRECT_URI env vars");
     }

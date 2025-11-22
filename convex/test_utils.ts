@@ -16,7 +16,7 @@ export const createTestUser = action({
     siteId: v.string(), // e.g. "MLA", "MLC", etc.
     description: v.string(), // e.g. "Test Seller for Vitrina"
   },
-  handler: async (ctx, args) => {
+  handler: async (_ctx, args) => {
     if (!MP_ACCESS_TOKEN) {
       throw new Error("Missing MERCADO_PAGO_ACCESS_TOKEN env var.");
     }
