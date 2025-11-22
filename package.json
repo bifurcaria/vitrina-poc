@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "npx convex deploy --cmd 'npm run build:vite'",
-    "build:vite": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "codegen": "convex codegen",
+    "build:vite": "npm run codegen && tsc -b && vite build"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
