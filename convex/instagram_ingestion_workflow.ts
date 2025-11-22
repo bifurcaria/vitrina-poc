@@ -21,6 +21,11 @@ export const ingestInstagramPosts = internalAction({
     }
     const handle = request.handle;
 
+    await ctx.runMutation(internal.requests.updateStatus, {
+      requestId: args.requestId,
+      status: "processing",
+    });
+
     const results = [];
 
     for (const post of args.posts) {
@@ -60,7 +65,7 @@ export const ingestInstagramPosts = internalAction({
             console.error(`Failed to create MP preference for ${extracted.productName}:`, e);
         }
 
-        results.push({
+        const product = {
           productName: extracted.productName,
           price: safePrice,
           currency: "CLP",
@@ -69,16 +74,20 @@ export const ingestInstagramPosts = internalAction({
           processedImageUrl: processedImageUrl,
           igPostUrl: post.url,
           mercadoPagoLink,
+        };
+
+        await ctx.runMutation(internal.requests.addProducts, {
+          requestId: args.requestId,
+          products: [product],
         });
+
+        results.push(product);
     }
 
-    // 4. Save Results
-    if (results.length > 0) {
-      await ctx.runMutation(internal.requests.addProducts, {
-        requestId: args.requestId,
-        products: results,
-      });
-    }
+    await ctx.runMutation(internal.requests.updateStatus, {
+      requestId: args.requestId,
+      status: "completed",
+    });
 
     console.log("Valid products saved:", results.length);
     return { processed: results.length, valid: results };
