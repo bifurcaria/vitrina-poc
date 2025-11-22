@@ -31,11 +31,28 @@ export async function processAndUploadProductImage(ctx: ActionCtx, imageUrl: str
         
         const result = await model.generateContent([REMOVE_BACKGROUND_PROMPT, imagePart]);
         
-        console.log("Nano Banana response received.", result.response);
+        console.log("Nano Banana response received.");
         
-        // TODO: Properly handle the processed image from Gemini if/when it returns the image data directly.
-        // Currently using the original image as fallback/placeholder flow as the API response handling for image edits needs verification.
-        imageBlob = new Blob([arrayBuffer], { type: contentType });
+        const response = result.response;
+        const candidates = response.candidates;
+        
+        if (candidates && candidates.length > 0 && candidates[0].content && candidates[0].content.parts) {
+            const generatedImagePart = candidates[0].content.parts.find(part => part.inlineData);
+            
+            if (generatedImagePart && generatedImagePart.inlineData) {
+                console.log("Found generated image in response.");
+                const base64Data = generatedImagePart.inlineData.data;
+                const mimeType = generatedImagePart.inlineData.mimeType || "image/png";
+                const buffer = Buffer.from(base64Data, "base64");
+                imageBlob = new Blob([buffer], { type: mimeType });
+            } else {
+                console.warn("No image data found in Gemini response. Falling back to original image.");
+                imageBlob = new Blob([arrayBuffer], { type: contentType });
+            }
+        } else {
+             console.warn("Invalid Gemini response structure. Falling back to original image.");
+             imageBlob = new Blob([arrayBuffer], { type: contentType });
+        }
 
     } catch (e) {
         console.log("Nano Banana processing skipped/failed, using original:", e);
