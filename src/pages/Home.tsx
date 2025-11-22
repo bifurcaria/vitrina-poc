@@ -45,20 +45,7 @@ export function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300 flex flex-col">
-      <header className="py-6 px-6 text-center relative">
-        <div className="font-bold text-xl tracking-tight">
-            vitrina
-        </div>
-        
-        <button 
-          onClick={() => setShowSeller(!showSeller)} 
-          className="absolute top-6 right-6 text-sm text-gray-500 hover:text-gray-900"
-        >
-          {showSeller ? "Close" : "Sell"}
-        </button>
-      </header>
-
+    <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300 flex flex-col pt-20">
       <main className="flex-1 flex flex-col items-center justify-center px-4 -mt-20">
         <div className="max-w-4xl text-center space-y-8">
             <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter leading-none sm:leading-tight">
