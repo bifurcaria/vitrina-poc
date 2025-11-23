@@ -110,23 +110,21 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
                   alt={product.productName || "Product Image"}
                 />
               </div>
-              
-              <div className="p-4">
-                <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-1">
+              <div className="p-4 flex items-center justify-between">
+              <div className="flex flex-col leading-tight items-start">
+                <h3 className="text-gray-700 font-medium line-clamp-1 text-left">
                   {product.productName || "Unknown Product"}
                 </h3>
-                
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xl font-bold text-gray-900">
+                  <span className="text-gray-900">
                     {product.price ? `$${product.price}` : "N/A"}
                   </span>
-                  {product.size && (
-                     <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded text-gray-600">
+              </div>
+              {product.size && (
+                     <span className="font-normal px-2 py-1">
                        {product.size}
                      </span>
                   )}
                 </div>
-              </div>
             </div>
           ))}
           
