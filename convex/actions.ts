@@ -16,7 +16,7 @@ export const scrapeInstagram = action({
     });
 
     // Instagram Scraper Actor (apify/instagram-scraper)
-    // Limit to 5 posts as per spec
+    // Increased limit to fetch more posts in a single call, avoiding duplicate scraping
     const runInput = {
         "addParentData": false,
         "directUrls": [
@@ -25,9 +25,9 @@ export const scrapeInstagram = action({
         "enhanceUserSearchWithFacebookPage": false,
         "isUserReelFeedURL": false,
         "isUserTaggedFeedURL": false,
-        "resultsLimit": 10,
+        "resultsLimit": 50,
         "resultsType": "posts",
-        "searchLimit": 10,
+        "searchLimit": 50,
         "searchType": "user"
       }
 

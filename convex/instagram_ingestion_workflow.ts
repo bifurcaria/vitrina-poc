@@ -1,11 +1,114 @@
 "use node";
 
-import { internalAction } from "./_generated/server";
+import { internalAction, ActionCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
-import type { Doc } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import { extractProductDataFromCaption } from "./steps/parse_post";
 import { processAndUploadProductImage } from "./steps/process_image";
+
+const BATCH_SIZE = 2;
+
+interface ProcessedResult {
+  productName: string;
+  price: number;
+  currency: string;
+  size: string | undefined;
+  originalImageUrl: string;
+  processedImageUrl: string | undefined;
+  igPostUrl: string;
+  mercadoPagoLink: string | undefined;
+}
+
+async function processPost(
+  ctx: ActionCtx,
+  post: any,
+  requestId: Id<"catalog_requests">,
+  handle: string
+): Promise<ProcessedResult | null> {
+  try {
+    // 0. Check for duplicates
+    const existing = await ctx.runQuery(internal.products.getProductByUrl, { igPostUrl: post.url });
+    if (existing) {
+      console.log(`Skipping post ${post.id}: Product already exists.`);
+      return null;
+    }
+
+    // 1. Text Analysis (Gemini)
+    const caption = post.caption || "";
+    const extracted = await extractProductDataFromCaption(caption);
+
+    // 2. Filtering
+    // If no price, discard
+    if (!extracted || typeof extracted.price !== 'number') {
+      console.log(`Skipping post ${post.id}: No valid price found.`);
+      return null;
+    }
+
+    // Ensure price is number
+    const safePrice: number = extracted.price;
+
+    console.log(`Found product: ${extracted.productName} - ${safePrice?.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}`);
+
+    // 3. SAVE IMMEDIATELY (Draft with original image)
+    const initialProduct = {
+      productName: extracted.productName,
+      price: safePrice,
+      currency: "CLP",
+      size: extracted.size || undefined,
+      originalImageUrl: post.displayUrl,
+      processedImageUrl: undefined,
+      igPostUrl: post.url,
+      mercadoPagoLink: undefined,
+    };
+
+    // Save initial product to let UI render it ASAP
+    const productIds = await ctx.runMutation(internal.requests.addProducts, {
+      requestId: requestId,
+      products: [initialProduct],
+    });
+    const productId = productIds[0];
+
+    // 4. Image Processing
+    const processedImageUrl = await processAndUploadProductImage(ctx, post.displayUrl, extracted.productName) || post.displayUrl;
+    console.log("Processed image:", processedImageUrl);
+
+    // 5. Generate Mercado Pago Preference
+    let mercadoPagoLink: string | undefined;
+    try {
+        // Only attempt if we have a valid price and name
+        if (safePrice > 0 && extracted.productName) {
+             const link = await ctx.runAction(internal.mercadopago.createPreference, {
+                handle,
+                title: extracted.productName,
+                price: safePrice,
+                imageUrl: processedImageUrl,
+            }) as string | null;
+            if (link) mercadoPagoLink = link;
+        }
+    } catch (e) {
+        console.error(`Failed to create MP preference for ${extracted.productName}:`, e);
+    }
+
+    // 6. Update with processed image and MP link
+    if (productId) {
+        await ctx.runMutation(internal.products.updateProduct, {
+            id: productId,
+            processedImageUrl,
+            mercadoPagoLink,
+        });
+    }
+
+    return {
+        ...initialProduct,
+        processedImageUrl,
+        mercadoPagoLink,
+    };
+  } catch (error) {
+    console.error(`Failed to process post ${post.id}:`, error);
+    return null;
+  }
+}
 
 export const ingestInstagramPosts = internalAction({
   args: {
@@ -26,85 +129,18 @@ export const ingestInstagramPosts = internalAction({
       status: "processing",
     });
 
-    const results = [];
+    const results: ProcessedResult[] = [];
 
     try {
-        for (const post of args.posts) {
-            try {
-                // 1. Text Analysis (Gemini)
-                const caption = post.caption || "";
-                const extracted = await extractProductDataFromCaption(caption);
-
-                // 2. Filtering
-                // If no price, discard
-                if (!extracted || extracted.price === null) {
-                  console.log(`Skipping post ${post.id}: No valid price found.`);
-                  continue;
-                }
-
-                // Ensure price is number
-                const safePrice: number = extracted.price;
-
-                console.log(`Found product: ${extracted.productName} - ${safePrice?.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}`);
-
-                // 3. SAVE IMMEDIATELY (Draft with original image)
-                const initialProduct = {
-                  productName: extracted.productName,
-                  price: safePrice,
-                  currency: "CLP",
-                  size: extracted.size || undefined,
-                  originalImageUrl: post.displayUrl,
-                  processedImageUrl: undefined,
-                  igPostUrl: post.url,
-                  mercadoPagoLink: undefined,
-                };
-
-                // Save initial product to let UI render it ASAP
-                const productIds = await ctx.runMutation(internal.requests.addProducts, {
-                  requestId: args.requestId,
-                  products: [initialProduct],
-                });
-                const productId = productIds[0];
-
-                // 4. Image Processing
-                const processedImageUrl = await processAndUploadProductImage(ctx, post.displayUrl, extracted.productName) || post.displayUrl;
-                console.log("Processed image:", processedImageUrl);
-
-                // 5. Generate Mercado Pago Preference
-                let mercadoPagoLink: string | undefined;
-                try {
-                    // Only attempt if we have a valid price and name
-                    if (safePrice > 0 && extracted.productName) {
-                         const link = await ctx.runAction(internal.mercadopago.createPreference, {
-                            handle,
-                            title: extracted.productName,
-                            price: safePrice,
-                            imageUrl: processedImageUrl,
-                        }) as string | null;
-                        if (link) mercadoPagoLink = link;
-                    }
-                } catch (e) {
-                    console.error(`Failed to create MP preference for ${extracted.productName}:`, e);
-                }
-
-                // 6. Update with processed image and MP link
-                if (productId) {
-                    await ctx.runMutation(internal.products.updateProduct, {
-                        id: productId,
-                        processedImageUrl,
-                        mercadoPagoLink,
-                    });
-                }
-
-                results.push({
-                    ...initialProduct,
-                    processedImageUrl,
-                    mercadoPagoLink,
-                });
-            } catch (error) {
-                console.error(`Failed to process post ${post.id}:`, error);
-                // Continue to next post
-            }
+        for (let i = 0; i < args.posts.length; i += BATCH_SIZE) {
+            const batch = args.posts.slice(i, i + BATCH_SIZE);
+            console.log(`Processing batch ${i / BATCH_SIZE + 1} of ${Math.ceil(args.posts.length / BATCH_SIZE)}`);
+            
+            const batchResults = await Promise.all(
+                batch.map(post => processPost(ctx, post, args.requestId, handle))
+            );
+            
+            results.push(...batchResults.filter((r): r is ProcessedResult => r !== null));
         }
         
         await ctx.runMutation(internal.requests.updateStatus, {

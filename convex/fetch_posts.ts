@@ -29,9 +29,9 @@ export const ingestInstagramPosts = internalAction({
         }
 
         // Ensure price is number
-        const safePrice: number = extracted.price;
+        const safePrice: number = extracted?.price || 0;
 
-        console.log(`Found product: ${extracted.productName} - ${extracted.price} CLP`);
+        console.log(`Found product: ${extracted?.productName} - ${safePrice} CLP`);
 
         // 3. Image Processing
         const processedImageUrl = await processAndUploadProductImage(ctx, post.displayUrl, extracted.productName) || post.displayUrl;

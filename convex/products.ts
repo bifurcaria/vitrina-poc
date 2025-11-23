@@ -1,6 +1,17 @@
-import { query, internalMutation } from "./_generated/server";
+import { query, internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import type { Doc } from "./_generated/dataModel";
+
+export const getProductByUrl = internalQuery({
+  args: { igPostUrl: v.string() },
+  handler: async (ctx, args) => {
+    const product = await ctx.db
+      .query("products")
+      .withIndex("by_igPostUrl", (q) => q.eq("igPostUrl", args.igPostUrl))
+      .first();
+    return product;
+  },
+});
 
 export const getProducts = query({
   args: { limit: v.optional(v.number()) },
