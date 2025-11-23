@@ -38,6 +38,8 @@ export const ingestInstagramPosts = internalAction({
 
         results.push({
           productName: extracted.productName,
+          shortDescription: extracted.shortDescription || undefined,
+          condition: extracted.condition || undefined,
           price: safePrice,
           currency: "CLP",
           size: extracted.size || undefined,

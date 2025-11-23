@@ -17,6 +17,8 @@ export default defineSchema({
     originalImageUrl: v.string(),
     processedImageUrl: v.optional(v.string()),
     productName: v.optional(v.string()),
+    shortDescription: v.optional(v.string()),
+    condition: v.optional(v.string()),
     price: v.optional(v.number()),
     currency: v.optional(v.string()),
     size: v.optional(v.string()),

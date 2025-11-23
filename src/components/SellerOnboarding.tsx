@@ -31,7 +31,7 @@ export function SellerOnboarding({ handle }: { handle: string }) {
       <button
         onClick={handleConnect}
         disabled={loading}
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+        className="bg-neutral-500 text-white px-4 py-2 rounded disabled:opacity-50"
       >
         {loading ? "Redirecting..." : "Connect Mercado Pago"}
       </button>

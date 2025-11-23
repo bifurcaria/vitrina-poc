@@ -50,6 +50,16 @@ export function ProductDetail({ productId, onClose }: ProductDetailProps) {
                    Size {product.size}
                 </p>
               )}
+              {product.condition && (
+                <span className="inline-flex items-center text-sm font-medium w-fit">
+                   {product.condition}
+                </span>
+              )}
+              {product.shortDescription && (
+                 <p className="text-gray-600 text-base text-left leading-relaxed">
+                   {product.shortDescription}
+                 </p>
+              )}
             </div>
             <div className="text-4xl font-regular tracking-tight text-gray-900">
               {product.price?.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}

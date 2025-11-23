@@ -66,6 +66,8 @@ async function processPost(
     // 3. SAVE IMMEDIATELY (Draft with original image)
     const initialProduct = {
       productName: extracted.productName,
+      shortDescription: extracted.shortDescription || undefined,
+      condition: extracted.condition || undefined,
       price: safePrice,
       currency: "CLP",
       size: extracted.size || undefined,

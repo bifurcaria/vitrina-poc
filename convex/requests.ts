@@ -38,6 +38,8 @@ export const addProducts = internalMutation({
     products: v.array(
       v.object({
         productName: v.string(),
+        shortDescription: v.optional(v.string()),
+        condition: v.optional(v.string()),
         price: v.number(),
         currency: v.string(),
         size: v.optional(v.string()),
@@ -59,6 +61,8 @@ export const addProducts = internalMutation({
       const id = await ctx.db.insert("products", {
         requestId: args.requestId,
         productName: product.productName,
+        shortDescription: product.shortDescription,
+        condition: product.condition,
         price: product.price,
         originalImageUrl: product.originalImageUrl,
         processedImageUrl: product.processedImageUrl,

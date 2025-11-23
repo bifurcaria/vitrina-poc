@@ -3,6 +3,8 @@ export const EXTRACT_PRODUCT_INFO_PROMPT = `
   - Product Name (short, descriptive). Normalize brand names if they appear obfuscated (e.g., "ni.ke" -> "Nike", "po.lo" -> "Polo"). Remove special characters used to bypass filters.
   - Price (numeric value only). Prices in Chile are often abbreviated. If a price is a small number (e.g., < 1000) and likely represents thousands (e.g., "5" meaning 5.000 CLP), multiply it by 1000 to get the full value.
   - Size (if available), in a clean format, preferably short and without brackets or unusual characters. If possible, do not exceed 3 characters.
+  - Short Description: A brief description of the item (max 100 chars). In spanish.
+  - Condition: The condition of the item (e.g., "New", "Like New", "Good", "Fair", "Poor"), if mentioned.
   - If the caption indicates that the product is already sold, skip the post.
   - You only support posts that contain one product. Discard posts that contain multiple products.
   - You'll extract clothing, shoes, accessories, etc. Not magnets, stickers or unrelated merch.
@@ -10,6 +12,8 @@ export const EXTRACT_PRODUCT_INFO_PROMPT = `
   Return ONLY valid JSON matching this schema:
   {
     "productName": "string",
+    "shortDescription": "string",
+    "condition": "string",
     "price": number | null,
     "size": "string | null"
   }

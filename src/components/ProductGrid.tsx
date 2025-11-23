@@ -134,9 +134,16 @@ function ProductCard({ product, onClick, index = 0 }: { product: any, onClick: (
                     <h3 className="text-gray-700 font-medium line-clamp-1 text-left text-sm h-5 w-full">
                         <TypewriterText text={product.productName || "Sin título"} delay={index * 100} />
                     </h3>
-                    <span className="text-gray-900 font-semibold">
-                        {product.price ? `$${product.price.toLocaleString()}` : "—"}
-                    </span>
+                    <div className="flex items-center gap-2 w-full">
+                        <span className="text-gray-900 font-semibold">
+                            {product.price ? `$${product.price.toLocaleString()}` : "—"}
+                        </span>
+                        {product.condition && (
+                            <span className="text-xs text-gray-400 font-normal truncate">
+                                {product.condition}
+                            </span>
+                        )}
+                    </div>
                 </div>
                 {product.size && (
                     <span className="text-xs font-medium bg-gray-50 px-2 py-1 rounded text-gray-600 border border-gray-100 shrink-0 ml-2">
@@ -235,7 +242,7 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
         ))}
         
         {/* Show skeletons if we are loading or still processing more items */}
-        {(isLoading || isProcessing) && Array.from({ length: skeletonCount }).map((_, i) => (
+        {(isLoading || isProcessing) && phase !== 'search' && Array.from({ length: skeletonCount }).map((_, i) => (
           <MagicSkeleton key={`skel-${i}`} phase={phase} />
         ))}
       </div>
