@@ -8,6 +8,7 @@ import { LatestListings } from "../components/LatestListings";
 
 export function Home() {
   const [handle, setHandle] = useState("");
+  const [isInputVisible, setIsInputVisible] = useState(false);
   const [showSeller] = useState(false);
   const [sellerHandle, setSellerHandle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +47,7 @@ export function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300 flex flex-col pt-8">
       <main className="flex-1 flex flex-col items-center justify-center px-4">
-        <div className="max-w-4xl text-center flex flex-col gap-12">   
+        <div className="max-w-4xl text-center flex flex-col gap-8">   
             <div className="flex flex-col gap-2">
             <h2 className="text-xl font-medium">publica como siempre, cobra con un clic.</h2>
             <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter leading-none sm:leading-tight">
@@ -55,22 +56,35 @@ export function Home() {
             </h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="max-w-md mx-auto w-full flex gap-2 flex-col">
-                <input 
-                    type="text" 
-                    placeholder="@usuario"  
-                    value={handle}
-                    onChange={(e) => setHandle(e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-lg border border-gray-200 bg-transparent focus:ring-2 focus:ring-black outline-none transition text-lg"
-                    disabled={isLoading}
-                />
-                <button 
-                    type="submit"
-                    disabled={isLoading}
-                    className={`px-6 py-3 text-black font-semibold transition-all duration-500 text-xl whitespace-nowrap mx-auto underline underline-offset-4 disabled:opacity-50 ${isLoading ? 'opacity-70' : 'hover:opacity-70'}`}
-                >
-                    {isLoading ? "Conectando..." : "empecemos \u2192"}
-                </button>
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto w-full flex gap-2 flex-col items-center min-h-[60px]">
+                {!isInputVisible ? (
+                    <button 
+                        type="button"
+                        onClick={() => setIsInputVisible(true)}
+                        className="px-6 py-3 text-black font-semibold transition-all duration-500 text-xl whitespace-nowrap mx-auto underline underline-offset-4 hover:opacity-70"
+                    >
+                        empecemos →
+                    </button>
+                ) : (
+                    <div className="flex w-full gap-2 items-center animate-in fade-in zoom-in duration-300">
+                        <input 
+                            type="text" 
+                            placeholder="@usuario"  
+                            value={handle}
+                            onChange={(e) => setHandle(e.target.value)}
+                            className="flex-1 px-4 py-3 rounded-lg border border-gray-200 bg-transparent focus:ring-2 focus:ring-black outline-none transition text-lg"
+                            disabled={isLoading}
+                            autoFocus
+                        />
+                        <button 
+                            type="submit"
+                            disabled={isLoading}
+                            className={`px-4 py-3 text-black font-semibold transition-all duration-500 text-xl disabled:opacity-50 ${isLoading ? 'opacity-70' : 'hover:opacity-70'}`}
+                        >
+                            {isLoading ? "..." : "→"}
+                        </button>
+                    </div>
+                )}
             </form>
         </div>
 

@@ -27,7 +27,7 @@ export function LatestListings() {
   return (
     <>
       <div className="w-full max-w-6xl mx-auto px-6 py-12">
-        <h3 className="text-center text-sm font-medium text-gray-400 mb-6 tracking-wide animate-in fade-in duration-1000">
+        <h3 className="text-center text-xl font-medium italic mb-6 animate-in fade-in duration-1000">
           tus prendas podrían verse así
         </h3>
         
@@ -54,7 +54,7 @@ export function LatestListings() {
                   {product.productName || "Item"}
                 </h3>
                 
-                <div className="text-sm font-semibold text-gray-500 mt-0.5">
+                <div className="text-sm mt-0.5">
                   {product.price ? `$${product.price}` : ""}
                 </div>
               </div>
