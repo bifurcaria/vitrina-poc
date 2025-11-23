@@ -8,7 +8,7 @@ import { LatestListings } from "../components/LatestListings";
 
 export function Home() {
   const [handle, setHandle] = useState("");
-  const [showSeller, setShowSeller] = useState(false);
+  const [showSeller] = useState(false);
   const [sellerHandle, setSellerHandle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();

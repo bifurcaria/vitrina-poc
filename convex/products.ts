@@ -1,5 +1,6 @@
 import { query, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
+import { Doc } from "./_generated/dataModel";
 
 export const getProducts = query({
   args: { limit: v.optional(v.number()) },
@@ -49,7 +50,7 @@ export const updateProduct = internalMutation({
     mercadoPagoLink: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const updates: any = {};
+    const updates: Partial<Doc<"products">> = {};
     if (args.processedImageUrl !== undefined) updates.processedImageUrl = args.processedImageUrl;
     if (args.mercadoPagoLink !== undefined) updates.mercadoPagoLink = args.mercadoPagoLink;
     

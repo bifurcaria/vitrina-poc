@@ -50,7 +50,6 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
   const [loadingPhase, setLoadingPhase] = useState<LoadingPhase>('importing');
 
   useEffect(() => {
-    setLoadingPhase('importing');
     const t1 = setTimeout(() => setLoadingPhase('searching'), 3000);
     const t2 = setTimeout(() => setLoadingPhase('skeletons'), 6000);
     

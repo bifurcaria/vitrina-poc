@@ -18,7 +18,7 @@ export function Profile() {
       </header>
 
       <main>
-        <ProductGrid handle={handle} />
+        <ProductGrid handle={handle} key={handle} />
       </main>
     </div>
   );
