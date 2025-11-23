@@ -27,19 +27,18 @@ export function Home() {
         const requestId = await createRequest({ handle: cleanHandle });
         
         // 2. Trigger Scraping Action
-        // We don't await this full process to finish before navigating, 
-        // or we can, depending on UX preference. 
-        // For "instant" feel, we navigate and let it load in background.
-        // But since the profile page depends on data, maybe we start it and navigate.
         scrapeInstagram({ requestId, handle: cleanHandle }).catch(console.error);
+        
+        // 3. Artificial Delay for UX (The Handshake)
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
         navigate(`/${cleanHandle}`);
       } catch (error) {
         console.error("Failed to start ingestion:", error);
-        // Navigate anyway so they see the empty state or previous results
         navigate(`/${cleanHandle}`);
       } finally {
-        setIsLoading(false);
+        // We don't set loading to false here because we are navigating away
+        // and want to keep the state until unmount
       }
     }
   };
@@ -68,9 +67,9 @@ export function Home() {
                 <button 
                     type="submit"
                     disabled={isLoading}
-                    className="px-6 py-3 text-black font-semibold hover:opacity-70 transition text-xl whitespace-nowrap mx-auto underline underline-offset-4 disabled:opacity-50"
+                    className={`px-6 py-3 text-black font-semibold transition-all duration-500 text-xl whitespace-nowrap mx-auto underline underline-offset-4 disabled:opacity-50 ${isLoading ? 'opacity-70' : 'hover:opacity-70'}`}
                 >
-                    {isLoading ? "cargando..." : "empecemos \u2192"}
+                    {isLoading ? "Conectando..." : "empecemos \u2192"}
                 </button>
             </form>
         </div>
