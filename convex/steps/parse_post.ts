@@ -16,7 +16,7 @@ export const extractProductDataFromCaption = traceable(async function extractPro
   if (!caption) return null;
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `${EXTRACT_PRODUCT_INFO_PROMPT}
 

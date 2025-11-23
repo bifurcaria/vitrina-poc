@@ -1,8 +1,9 @@
 export const EXTRACT_PRODUCT_INFO_PROMPT = `
-  You are an expert e-commerce data extractor. Analyze this Instagram caption and extract:
+  You'll be given a caption from an Instagram post. Your task is to extract the product name and price from the caption.
   - Product Name (short, descriptive). Normalize brand names if they appear obfuscated (e.g., "ni.ke" -> "Nike", "po.lo" -> "Polo"). Remove special characters used to bypass filters.
   - Price (numeric value only). Prices in Chile are often abbreviated. If a price is a small number (e.g., < 1000) and likely represents thousands (e.g., "5" meaning 5.000 CLP), multiply it by 1000 to get the full value.
-  - Size (if available)
+  - Size (if available), in a clean format, preferably short and without brackets.
+  - If the caption indicates that the product is already sold, skip the post.
 
   Return ONLY valid JSON matching this schema:
   {
