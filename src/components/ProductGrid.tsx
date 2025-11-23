@@ -10,15 +10,15 @@ interface ProductGridProps {
 
 function SkeletonProduct() {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 w-full h-full">
-      <div className="aspect-square bg-gray-200 dark:bg-gray-700 animate-pulse" />
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 w-full h-full">
+      <div className="aspect-square bg-gray-200 animate-pulse" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
         <div className="flex justify-between items-center">
-           <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/3 animate-pulse" />
-           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-8 animate-pulse" />
+           <div className="h-5 bg-gray-200 rounded w-1/3 animate-pulse" />
+           <div className="h-4 bg-gray-200 rounded w-8 animate-pulse" />
         </div>
-        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 animate-pulse" />
+        <div className="h-3 bg-gray-200 rounded w-1/2 animate-pulse" />
       </div>
     </div>
   );
@@ -28,8 +28,8 @@ function ImageWithPlaceholder({ src, alt }: { src: string, alt: string }) {
   const [loaded, setLoaded] = useState(false);
   
   return (
-    <div className="w-full h-full relative overflow-hidden bg-gray-100 dark:bg-gray-900">
-       {!loaded && <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse z-10" />}
+    <div className="w-full h-full relative overflow-hidden bg-gray-100">
+       {!loaded && <div className="absolute inset-0 bg-gray-200 animate-pulse z-10" />}
        <img
          src={src}
          alt={alt}
@@ -89,9 +89,9 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
           <div 
             key={product._id} 
             onClick={() => setSelectedProductId(product._id)}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition cursor-pointer group animate-in fade-in duration-500"
+            className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition cursor-pointer group animate-in fade-in duration-500"
           >
-            <div className="aspect-square relative bg-gray-100 dark:bg-gray-900 overflow-hidden">
+            <div className="aspect-square relative bg-gray-100 overflow-hidden">
               <ImageWithPlaceholder 
                 src={product.processedImageUrl || product.originalImageUrl} 
                 alt={product.productName || "Product Image"}
@@ -99,16 +99,16 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
             </div>
             
             <div className="p-4">
-              <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">
+              <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-1">
                 {product.productName || "Unknown Product"}
               </h3>
               
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xl font-bold text-gray-900 dark:text-white">
+                <span className="text-xl font-bold text-gray-900">
                   {product.price ? `$${product.price}` : "N/A"}
                 </span>
                 {product.size && (
-                   <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">
+                   <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded text-gray-600">
                      {product.size}
                    </span>
                 )}

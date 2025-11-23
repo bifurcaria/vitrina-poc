@@ -22,11 +22,11 @@ export function LatestListings() {
         {products.map((product, index) => (
           <div 
             key={product._id} 
-            className={`bg-white dark:bg-gray-800 overflow-hidden w-36 sm:w-40 ${
+            className={`bg-white overflow-hidden w-36 sm:w-40 ${
               index >= 4 ? 'hidden sm:block' : ''
             }`}
           >
-            <div className="aspect-square relative bg-gray-100 dark:bg-gray-900 overflow-hidden">
+            <div className="aspect-square relative bg-gray-100 overflow-hidden">
               <img 
                 src={product.processedImageUrl || product.originalImageUrl} 
                 alt={product.productName || "Product Image"}
@@ -35,11 +35,11 @@ export function LatestListings() {
             </div>
             
             <div className="p-3 text-center">
-              <h3 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+              <h3 className="font-medium text-sm text-gray-900 truncate">
                 {product.productName || "Item"}
               </h3>
               
-              <div className="text-sm font-semibold text-gray-500 dark:text-gray-400 mt-0.5">
+              <div className="text-sm font-semibold text-gray-500 mt-0.5">
                 {product.price ? `$${product.price}` : ""}
               </div>
             </div>
