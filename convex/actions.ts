@@ -50,7 +50,12 @@ export const scrapeInstagram = action({
 
     } catch (error) {
       console.error("Apify scrape failed:", error);
-      // In a real app, we would update the request status to failed here
+      
+      await ctx.runMutation(internal.requests.updateStatus, {
+        requestId: args.requestId,
+        status: "failed",
+      });
+      
       throw new Error("Failed to scrape Instagram");
     }
   },

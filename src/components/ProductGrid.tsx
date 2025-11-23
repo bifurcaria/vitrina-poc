@@ -57,6 +57,9 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
   // Calculate how many skeletons are needed to reach at least 3, but only if we are in a loading/processing state.
   // If we are done (not loading/processing), we show exactly what we have (even if 0 or 1).
   const skeletonCount = isLoading ? Math.max(0, 3 - productCount) : 0;
+  
+  // Only show the text banner if we are loading AND have no products yet.
+  const showLoadingBanner = isLoading && productCount === 0;
 
   if (!isLoading && productCount === 0) {
     if (requestStatus?.status === "failed") {
@@ -78,7 +81,7 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
-      {isLoading && (
+      {showLoadingBanner && (
         <div className="w-full text-center py-2 animate-pulse text-gray-500 font-medium transition-opacity duration-500">
           buscando prendas disponibles...
         </div>

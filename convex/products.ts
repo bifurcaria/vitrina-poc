@@ -41,3 +41,18 @@ export const updateProductLink = internalMutation({
     });
   },
 });
+
+export const updateProduct = internalMutation({
+  args: {
+    id: v.id("products"),
+    processedImageUrl: v.optional(v.string()),
+    mercadoPagoLink: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const updates: any = {};
+    if (args.processedImageUrl !== undefined) updates.processedImageUrl = args.processedImageUrl;
+    if (args.mercadoPagoLink !== undefined) updates.mercadoPagoLink = args.mercadoPagoLink;
+    
+    await ctx.db.patch(args.id, updates);
+  },
+});

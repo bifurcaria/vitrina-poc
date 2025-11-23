@@ -42,7 +42,7 @@ export const addProducts = internalMutation({
         currency: v.string(),
         size: v.optional(v.string()),
         originalImageUrl: v.string(),
-        processedImageUrl: v.string(),
+        processedImageUrl: v.optional(v.string()),
         igPostUrl: v.string(),
         mercadoPagoLink: v.optional(v.string()),
       })
@@ -54,8 +54,9 @@ export const addProducts = internalMutation({
         throw new Error("Request not found");
     }
 
+    const productIds = [];
     for (const product of args.products) {
-      await ctx.db.insert("products", {
+      const id = await ctx.db.insert("products", {
         requestId: args.requestId,
         productName: product.productName,
         price: product.price,
@@ -66,7 +67,9 @@ export const addProducts = internalMutation({
         mercadoPagoLink: product.mercadoPagoLink,
         handle: request.handle,
       });
+      productIds.push(id);
     }
+    return productIds;
   },
 });
 
