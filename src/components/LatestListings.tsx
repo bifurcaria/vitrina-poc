@@ -20,8 +20,8 @@ export function LatestListings() {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-6 py-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-      <h3 className="text-center text-sm font-medium text-gray-400 mb-6 tracking-wide">
+    <div className="w-full max-w-6xl mx-auto px-6 py-12">
+      <h3 className="text-center text-sm font-medium text-gray-400 mb-6 tracking-wide animate-in fade-in duration-1000">
         tus prendas podrían verse así
       </h3>
       
@@ -29,7 +29,8 @@ export function LatestListings() {
         {validProducts.map((product, index) => (
           <div 
             key={product._id} 
-            className={`bg-white overflow-hidden w-36 sm:w-40 ${
+            style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
+            className={`bg-white overflow-hidden w-36 sm:w-40 animate-reveal ${
               index >= 4 ? 'hidden sm:block' : ''
             }`}
           >

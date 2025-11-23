@@ -76,12 +76,49 @@ function MagicSkeleton({ phase }: { phase: LoadingPhase }) {
   );
 }
 
-function ProductCard({ product, onClick }: { product: any, onClick: () => void }) {
+function TypewriterText({ text, delay = 0 }: { text: string, delay?: number }) {
+  const [displayedText, setDisplayedText] = useState("");
+  
+  useEffect(() => {
+    let timeoutId: any;
+    let currentTextIndex = 0;
+
+    const typeChar = () => {
+        if (currentTextIndex < text.length) {
+            currentTextIndex++;
+            setDisplayedText(text.substring(0, currentTextIndex));
+            
+            // Add randomness to typing speed (30ms + 0-30ms random)
+            const randomSpeed = 30 + Math.random() * 30;
+            timeoutId = setTimeout(typeChar, randomSpeed);
+        }
+    };
+
+    // Initial delay before starting
+    const startTimeout = setTimeout(() => {
+        typeChar();
+    }, delay + 300);
+
+    return () => {
+        clearTimeout(startTimeout);
+        clearTimeout(timeoutId);
+    };
+  }, [text, delay]);
+
+  return (
+    <span>
+      {displayedText}
+    </span>
+  );
+}
+
+function ProductCard({ product, onClick, index = 0 }: { product: any, onClick: () => void, index?: number }) {
     const [imageLoaded, setImageLoaded] = useState(false);
 
     return (
         <div 
             onClick={onClick}
+            style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
             className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition cursor-pointer group animate-reveal"
         >
             <div className="aspect-square relative bg-gray-50 overflow-hidden">
@@ -93,16 +130,16 @@ function ProductCard({ product, onClick }: { product: any, onClick: () => void }
                 />
             </div>
             <div className="p-4 flex items-center justify-between">
-                <div className="flex flex-col leading-tight items-start space-y-1">
-                    <h3 className="text-gray-700 font-medium line-clamp-1 text-left text-sm">
-                        {product.productName || "Sin título"}
+                <div className="flex flex-col leading-tight items-start space-y-1 w-full">
+                    <h3 className="text-gray-700 font-medium line-clamp-1 text-left text-sm h-5 w-full">
+                        <TypewriterText text={product.productName || "Sin título"} delay={index * 100} />
                     </h3>
                     <span className="text-gray-900 font-semibold">
                         {product.price ? `$${product.price.toLocaleString()}` : "—"}
                     </span>
                 </div>
                 {product.size && (
-                    <span className="text-xs font-medium bg-gray-50 px-2 py-1 rounded text-gray-600 border border-gray-100">
+                    <span className="text-xs font-medium bg-gray-50 px-2 py-1 rounded text-gray-600 border border-gray-100 shrink-0 ml-2">
                         {product.size}
                     </span>
                 )}
@@ -188,10 +225,11 @@ export function ProductGrid({ handle }: ProductGridProps = {}) {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products?.map((product) => (
+        {products?.map((product, index) => (
           <ProductCard 
             key={product._id} 
             product={product} 
+            index={index}
             onClick={() => setSelectedProductId(product._id)} 
           />
         ))}
