@@ -45,13 +45,16 @@ export function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300 flex flex-col pt-20">
-      <main className="flex-1 flex flex-col items-center justify-center px-4 -mt-20">
-        <div className="max-w-4xl text-center space-y-8">
+    <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300 flex flex-col pt-8">
+      <main className="flex-1 flex flex-col items-center justify-center px-4">
+        <div className="max-w-4xl text-center flex flex-col gap-12">   
+            <div className="flex flex-col gap-2">
+            <h2 className="text-xl font-medium">publica como siempre, cobra con un clic.</h2>
             <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter leading-none sm:leading-tight">
                 tus fotos viven en instagram. <br className="hidden md:block" />
                 <span className="italic">tu catálogo empieza aquí.</span>
             </h1>
+            </div>
 
             <form onSubmit={handleSubmit} className="max-w-md mx-auto w-full flex gap-2 flex-col">
                 <input 
